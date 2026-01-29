@@ -108,10 +108,10 @@ sq --min-size 5g --json ~/Desktop > bigfiles.json
 
 ### Planned
 
-- Ensure CSV/JSON outputs are strictly machine-pure (no footers)
+- Ensure JSON outputs are strictly machine-pure (no footers)
 - Custom directory ignore flags (`--ignore-dir build,tmp`)
 
-### Under consideration:
+### Under Consideration
 - Slack / Teams “phone home” summary via webhooks
 - Optional parallel directory traversal for very large filesystems
 
