@@ -29,3 +29,4 @@ csv:
 
 json:
 	sq --min-size 5g --json "~/Desktop" > bigfiles.json
+	sq --ext xlsx --json "~/Documents/Github" > results.json 

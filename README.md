@@ -2,6 +2,7 @@
 
 ## TOOD:
 
+JSON export shouldnt have file count (breaks json syntax)
 Add payload creator
 Add --slack-webhook $URL
 Add --teams-webhook $URL
