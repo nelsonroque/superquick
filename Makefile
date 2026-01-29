@@ -19,3 +19,13 @@ scary:
 
 sm:
 	sq --min-size 1GB "~/Documents/Github"
+
+t:
+	sq --ext xlsx --table "~/Documents/Github" --sort size
+
+csv:
+	sq --ext xlsx --csv "~/Documents/Github" > results.csv
+	python -c "import pandas as pd; df=pd.read_csv('results.csv'); print(df.head())"
+
+json:
+	sq --min-size 5g --json "~/Desktop" > bigfiles.json

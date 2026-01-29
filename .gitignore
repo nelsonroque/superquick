@@ -1,1 +1,3 @@
 /superquick/__pycache__
+*.csv
+*.json

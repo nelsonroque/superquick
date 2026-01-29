@@ -1,14 +1,79 @@
+# utils.py
 from __future__ import annotations
 
 import os
-
-from pathlib import Path
-from typing import Optional, Iterable
-
 import re
-from typing import Optional
+from pathlib import Path
+from typing import Iterable, Optional
 
-SIZE_MULTIPLIERS = {
+DEFAULT_SKIP_DIRS: set[str] = {
+    ".git",
+    "node_modules",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "dist",
+    "build",
+    ".tox",
+}
+
+
+def _normalize_ext(ext: Optional[str]) -> Optional[str]:
+    return ext.lower().lstrip(".") if ext else None
+
+
+def _as_path(p: Optional[Path]) -> Path:
+    """
+    Expand ~ and return a normalized Path. (Does not force resolve().)
+    """
+    if p is None:
+        return Path.cwd()
+    return Path(str(p)).expanduser()
+
+
+def _walk_files(
+    root: Path,
+    *,
+    follow_symlinks: bool,
+    ignore_hidden: bool,
+    skip_dirs: set[str],
+) -> Iterable[Path]:
+    """
+    Faster recursive walk using os.scandir(). Yields file Paths.
+    """
+    stack = [root]
+
+    while stack:
+        current = stack.pop()
+        try:
+            with os.scandir(current) as it:
+                for entry in it:
+                    name = entry.name
+
+                    if ignore_hidden and name.startswith("."):
+                        continue
+
+                    try:
+                        if entry.is_dir(follow_symlinks=follow_symlinks):
+                            if name in skip_dirs:
+                                continue
+                            stack.append(Path(entry.path))
+                        elif entry.is_file(follow_symlinks=follow_symlinks):
+                            yield Path(entry.path)
+                    except (PermissionError, FileNotFoundError, OSError):
+                        continue
+        except (PermissionError, FileNotFoundError, OSError):
+            continue
+
+
+# -----------------------
+# Size parsing + formatting
+# -----------------------
+
+_SIZE_MULTIPLIERS = {
     "b": 1,
     "k": 1024,
     "kb": 1024,
@@ -49,66 +114,23 @@ def parse_size(size: Optional[str]) -> Optional[int]:
     number_str, unit_str = m.groups()
     unit = unit_str.lower()
 
-    # No unit => bytes
     if unit == "":
         return int(float(number_str))
 
-    # Common normalization: allow "g" as GB, "m" as MB, etc.
-    if unit in SIZE_MULTIPLIERS:
-        return int(float(number_str) * SIZE_MULTIPLIERS[unit])
+    if unit in _SIZE_MULTIPLIERS:
+        return int(float(number_str) * _SIZE_MULTIPLIERS[unit])
 
     raise ValueError(
-        f"Unknown size unit: {unit_str!r}. Use one of: B, K, KB, KiB, M, MB, MiB, G, GB, GiB, T, TB, TiB"
+        f"Unknown size unit: {unit_str!r}. Use: B, K/KB/KiB, M/MB/MiB, G/GB/GiB, T/TB/TiB"
     )
 
 
-def _normalize_ext(ext: Optional[str]) -> Optional[str]:
-    return ext.lower().lstrip(".") if ext else None
-
-
-def _as_path(p: Optional[Path]) -> Path:
-    """
-    Expand ~ and environment vars, then resolve.
-    """
-    if p is None:
-        return Path.cwd()
-    # typer hands us a Path; expand ~ via string roundtrip
-    expanded = Path(str(p)).expanduser()
-    # Don't require resolve() to succeed for permission-restricted mounts; just normalize
-    return expanded
-
-
-def _walk_files(
-    root: Path,
-    *,
-    follow_symlinks: bool,
-    ignore_hidden: bool,
-    skip_dirs: set[str],
-) -> Iterable[Path]:
-    """
-    Faster recursive walk using os.scandir().
-    """
-    stack = [root]
-
-    while stack:
-        current = stack.pop()
-        try:
-            with os.scandir(current) as it:
-                for entry in it:
-                    name = entry.name
-
-                    if ignore_hidden and name.startswith("."):
-                        continue
-
-                    try:
-                        if entry.is_dir(follow_symlinks=follow_symlinks):
-                            if name in skip_dirs:
-                                continue
-                            stack.append(Path(entry.path))
-                        elif entry.is_file(follow_symlinks=follow_symlinks):
-                            yield Path(entry.path)
-                    except (PermissionError, FileNotFoundError, OSError):
-                        continue
-        except (PermissionError, FileNotFoundError, OSError):
-            continue
-
+def human_size(num_bytes: int) -> str:
+    n = float(num_bytes)
+    for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
+        if n < 1024.0 or unit == "PB":
+            if unit == "B":
+                return f"{int(n)}{unit}"
+            return f"{n:.1f}{unit}"
+        n /= 1024.0
+    return f"{n:.1f}PB"
