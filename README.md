@@ -2,7 +2,7 @@
 
 # image for logo here
 
-[![Superquick python package Logo](logo.png)(https://github.com/nelsonroque/superquick)]
+[![Superquick python package Logo](logo.png)](https://github.com/nelsonroque/superquick)
 
 [![uv](https://img.shields.io/badge/uv-supported-blue)](https://github.com/astral-sh/uv)
 [![Python](https://img.shields.io/badge/python-3.10%2B-brightgreen)](https://www.python.org/)
