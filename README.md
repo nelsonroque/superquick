@@ -7,7 +7,11 @@
 ---
 
 Fast, opinionated file search for interactive exploration and data triage.
-[![Superquick python package Logo](logo.png)](https://github.com/nelsonroque/superquick)
+
+<a href="https://github.com/nelsonroque/superquick">
+  <img src="logo.png" alt="Superquick python package Logo" width="200">
+</a>
+
 
 ---
 
