@@ -95,13 +95,13 @@ sq --min-size 5g --json ~/Desktop > bigfiles.json
 
 ## Roadmap
 
-Planned / under consideration:
+### Planned
 
 - Ensure CSV/JSON outputs are strictly machine-pure (no footers)
-- Slack / Teams “phone home” summary via webhooks
-- Multi-extension filtering (`--ext xlsx,xls,xlsm`)
-- `--largest N` shortcut (alias for `--sort size --limit N`)
 - Custom directory ignore flags (`--ignore-dir build,tmp`)
+
+### Under consideration:
+- Slack / Teams “phone home” summary via webhooks
 - Optional parallel directory traversal for very large filesystems
 
 ---
