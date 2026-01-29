@@ -1,12 +1,15 @@
 # superquick
 
-# image for logo here
-
-[![Superquick python package Logo](logo.png)](https://github.com/nelsonroque/superquick)
-
 [![uv](https://img.shields.io/badge/uv-supported-blue)](https://github.com/astral-sh/uv)
 [![Python](https://img.shields.io/badge/python-3.10%2B-brightgreen)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+
+---
+
+Fast, opinionated file search for interactive exploration and data triage.
+[![Superquick python package Logo](logo.png)](https://github.com/nelsonroque/superquick)
+
+---
 
 ## Why this exists
 
