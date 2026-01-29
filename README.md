@@ -1,5 +1,10 @@
 # superquick
 
+## Installation
+```bash
+uv pip install git+https://github.com/nelsonroque/superquick.git
+```
+
 ## TOOD:
 
 JSON export shouldnt have file count (breaks json syntax)
